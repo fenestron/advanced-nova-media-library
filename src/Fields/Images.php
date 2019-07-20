@@ -11,6 +11,7 @@ class Images extends Media
         parent::__construct($name, $attribute, $resolveCallback);
 
         $this->croppable();
+        $this->limit();
     }
 
     /**
@@ -34,4 +35,9 @@ class Images extends Media
 	{
 		return $this->withMeta(['croppingConfigs' => $configs]);
 	}
+
+    public function limit($limit = 10)
+    {
+        return $this->withMeta(['limit' => $limit]);
+    }
 }

@@ -25,7 +25,7 @@
 
     <span v-if="editable" class="form-file">
       <input :id="`__media__${field.attribute}`" :multiple="multiple" ref="file" class="form-file-input" type="file" @change="add"/>
-      <label :for="`__media__${field.attribute}`" class="form-file-btn btn btn-default btn-primary" v-text="label"/>
+      <label v-if="this.images.length < this.field.limit" :for="`__media__${field.attribute}`" class="form-file-btn btn btn-default btn-primary" v-text="label"/>
     </span>
 
     <p v-if="hasError" class="my-2 text-danger">
@@ -105,6 +105,9 @@
       },
 
       add() {
+        if (this.images.length + this.$refs.file.files.length > this.field.limit) {
+          return;
+        }
         Array.from(this.$refs.file.files).forEach(file => {
           file = new File([file], file.name, {type: file.type});
 
