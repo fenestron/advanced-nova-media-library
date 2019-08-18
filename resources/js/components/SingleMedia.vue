@@ -101,6 +101,9 @@
         });
       }
     },
+    mounted() {
+      if (!this.image.id) this.$emit('crop-start', this.image);
+    },
   };
 </script>
 

@@ -24,12 +24,15 @@
     <span v-else-if="!editable" class="mr-3">&mdash;</span>
 
     <span v-if="editable" class="form-file">
-      <input :id="`__media__${field.attribute}`" :multiple="multiple" ref="file" class="form-file-input" type="file" @change="add"/>
+      <input :id="`__media__${field.attribute}`" ref="file" class="form-file-input" type="file" @change="add"/>
       <label v-if="this.images.length < this.field.limit" :for="`__media__${field.attribute}`" class="form-file-btn btn btn-default btn-primary" v-text="label"/>
     </span>
 
     <p v-if="hasError" class="my-2 text-danger">
       {{ firstError }}
+    </p>
+    <p v-if="this.realError" class="my-2 text-danger">
+        {{ this.realError }}
     </p>
   </div>
 </template>
@@ -67,6 +70,7 @@
         images: this.value,
         customPropertiesImageIndex: null,
         singleComponent: this.field.type === 'media' ? SingleMedia : SingleFile,
+        realError: "",
       };
     },
     computed: {
@@ -105,32 +109,44 @@
       },
 
       add() {
-        if (this.images.length + this.$refs.file.files.length > this.field.limit) {
+        if (this.images.length + 1 > this.field.limit) {
           return;
         }
-        Array.from(this.$refs.file.files).forEach(file => {
-          file = new File([file], file.name, {type: file.type});
 
-          let reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            const fileData = {
-              file: file,
-              __media_urls__: {
-                __original__: reader.result,
-                default: reader.result,
-              },
-              name: file.name,
-              file_name: file.name,
-            };
+        let file = this.$refs.file.files[0];
 
-            if (this.multiple) {
-              this.images.push(fileData);
-            } else {
-              this.images = [fileData];
-            }
+        if (file.size > 10485760) {
+          this.realError = "Размер файла не должен превышать 10Мб";
+          return;
+        }
+        if (['image/jpeg', 'image/pjpeg', 'image/png'].indexOf(file.type) === -1)
+        {
+            this.realError = "Файл должен быть типа png, jpg или jpeg";
+            return;
+        }
+
+        file = new File([file], file.name, {type: file.type});
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const fileData = {
+            file: file,
+            __media_urls__: {
+              __original__: reader.result,
+              default: reader.result,
+            },
+            name: file.name,
+            file_name: file.name,
           };
-        });
+
+          if (this.multiple) {
+            this.images.push(fileData);
+          } else {
+            this.images = [fileData];
+          }
+        };
+
+        this.realError = "";
 
         // reset file input so if you upload the same image sequentially
         this.$refs.file.value = null;
