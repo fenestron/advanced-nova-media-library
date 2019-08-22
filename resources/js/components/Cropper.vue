@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <modal v-if="image" @modal-close="$emit('close')">
+    <modal v-if="image">
       <card class="text-center clipping-container m-2 bg-white rounded-lg shadow-lg overflow-hidden">
         <div class="p-4">
           <clipper-basic class="clipper" ref="clipper" bg-color="rgba(0, 0, 0, 0)" :rotate.number="rotate" :src="imageUrl" v-bind="configs"/>

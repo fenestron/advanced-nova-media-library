@@ -115,8 +115,8 @@
 
         let file = this.$refs.file.files[0];
 
-        if (file.size > 10485760) {
-          this.realError = "Размер файла не должен превышать 10Мб";
+        if (file.size > 6291456) {
+          this.realError = "Размер файла не должен превышать 6Мб";
           return;
         }
         if (['image/jpeg', 'image/pjpeg', 'image/png'].indexOf(file.type) === -1)
