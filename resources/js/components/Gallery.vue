@@ -119,7 +119,8 @@
           this.realError = "Размер файла не должен превышать 6Мб";
           return;
         }
-        if (['image/jpeg', 'image/pjpeg', 'image/png'].indexOf(file.type) === -1)
+        if (['image/jpeg', 'image/pjpeg', 'image/png', 'application/pdf', 'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].indexOf(file.type) === -1)
         {
             this.realError = "Файл должен быть типа png, jpg или jpeg";
             return;
